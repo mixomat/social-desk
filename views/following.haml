@@ -1,0 +1,7 @@
+!!! 5
+!!!
+%html
+	%h2 List of followers
+	%ul
+	- @followers.each do |f|
+		%li= f.name

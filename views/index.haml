@@ -1,0 +1,11 @@
+!!! 5
+!!!
+%html
+	%h2 List of followers
+	%form{:method => 'get', :action => '/followers'}
+		%input{:type => 'submit', :value => 'Go'}
+
+- host = ENV['VCAP_APP_HOST']
+- port = ENV['VCAP_APP_PORT']
+%p= "Running on Cloud Foundry host: #{host}:#{port}" if host
+	
