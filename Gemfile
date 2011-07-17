@@ -7,3 +7,4 @@ gem 'twitter'
 gem 'json'
 gem 'haml'
 gem 'rspec', :require => "spec"
+gem 'redis'
