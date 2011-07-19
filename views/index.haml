@@ -7,5 +7,7 @@
 
 - host = ENV['VCAP_APP_HOST']
 - port = ENV['VCAP_APP_PORT']
-%p= "Running on Cloud Foundry host: #{host}:#{port}" if host
+- services = ENV['VCAP_SERVICES']
+%p= "Running on Cloud Foundry host: #{host}:#{port}" unless host.nil?
+%p= "Available services: #{services}" unless services.nil?
 	
