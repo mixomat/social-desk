@@ -1,10 +1,15 @@
-source "http://rubygems.org"
-gem 'bundler'
+source :rubygems
 gem 'thin'
 gem 'sinatra'
-gem 'sinatra-reloader', :require => 'sinatra/reloader'
 gem 'twitter'
 gem 'json'
 gem 'haml'
-gem 'rspec', :require => "spec"
 gem 'redis'
+
+group :development, :test do
+  gem 'ruby-debug'
+  gem 'rack-test'
+  gem 'rspec', :require => 'spec'
+  gem 'rspec-core'
+	gem 'sinatra-reloader', :require => 'sinatra/reloader'
+end
