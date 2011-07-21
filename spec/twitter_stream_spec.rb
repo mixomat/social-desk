@@ -1,31 +1,28 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe TwitterStream do
+describe TwitterStream::Lists do
     
   before(:each) do
-    @twitter_stream = TwitterStream.new
+    @twitter_lists = TwitterStream::Lists.new("mixomat")
   end
   
-  it "can instantiate without args" do
-    stream = TwitterStream.new
-    stream.twitter.should be_kind_of Twitter::Client
+  it "can instantiate with user" do
+    lists = TwitterStream::Lists.new("mixomat")
   end
   
-  it "can retrieve lists for screen_name " do
-    lists = @twitter_stream.lists
+  it "can retrieve lists for user " do
+    lists = @twitter_lists.lists
     
     lists.should be_kind_of Array
     lists.should have_at_least(1).things
-    lists.first.name.should === "Games"
-    lists.first.slug.should === "games"
+    lists.first[:name].should === "Games"
   end
   
-  it "can get the timeline for a given list" do
-    list = @twitter_stream.lists.first
-    timeline = @twitter_stream.list_timeline list
+  it "can get the timeline for a list" do
+    list = @twitter_lists.lists.first
+    timeline = @twitter_lists.timeline list
     
-    puts timeline
-    
+    timeline.first.should be_kind_of Hashie::Mash
   end
   
 

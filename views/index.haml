@@ -1,9 +1,14 @@
 !!! 5
 !!!
 %html
-	%h2 List of followers
-	%form{:method => 'get', :action => '/followers'}
-		%input{:type => 'submit', :value => 'Go'}
+	%head
+	%script{:data => { :main  => 'js/main' }, :src => 'js/require-jquery.js' }
+	%header
+		%h2 Twitter lists
+		%select
+			- @lists.each do |name|
+				%option{:value => name}=name
+			
 
 - host = ENV['VCAP_APP_HOST']
 - port = ENV['VCAP_APP_PORT']
