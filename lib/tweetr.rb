@@ -1,3 +1,5 @@
+require "rubygems"
+require "bundler"
 require "redis"
 
 root = File.expand_path(File.dirname(__FILE__))
