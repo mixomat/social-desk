@@ -1,10 +1,12 @@
 require "rubygems"
 require "bundler"
+require "redis"
 
 module TwitterStream
-  
+
 end
 
-require "twitter_stream/connection"
-require "twitter_stream/lists"
+root = File.expand_path(File.dirname(__FILE__))
+require "#{root}/twitter_stream/connection"
+require "#{root}/twitter_stream/lists"
 
