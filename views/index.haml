@@ -6,8 +6,8 @@
 	%header
 		%h2 Twitter lists
 		%select
-			- @lists.each do |name|
-				%option{:value => name}=name
+			- @lists.each do |list|
+				%option{:value => list[:id]}=list[:name]
 			
 
 - host = ENV['VCAP_APP_HOST']
