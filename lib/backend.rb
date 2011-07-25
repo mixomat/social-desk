@@ -28,16 +28,9 @@ module SocialStream
 
     def self.included(receiver)
       receiver.extend         ClassMethods
-      receiver.extend         InstanceAndClassMethods
-      receiver.send :include,  InstanceMethods
-      receiver.send :include, InstanceAndClassMethods
+      receiver.send :include, InstanceMethods
     end
-    
-    module InstanceAndClassMethods
-      def redis
-        SocialStream::Backend.redis
-      end
-    end
+
     
     module InstanceMethods
       def model
@@ -59,7 +52,13 @@ module SocialStream
     end
     
     module ClassMethods 
-
+      def model
+         self.to_s.split('::').last.downcase
+      end
+      
+      def redis
+        SocialStream::Backend.redis
+      end
     end
     
 
