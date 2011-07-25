@@ -1,13 +1,36 @@
 require "rubygems"
 require "bundler"
-require "redis"
 
 root = File.expand_path(File.dirname(__FILE__))
+require "#{root}/backend"
 require "#{root}/tweetr/connection"
 require "#{root}/tweetr/lists"
+require "#{root}/tweetr/timeline"
+require "#{root}/tweetr/tweet"
 
 module SocialStream
-  module Tweetr
+  class Tweetr
+    
+    include SocialStream::Tweetr::Connection
+    include SocialStream::Tweetr::Lists
+    
+    attr_reader :user
+
+    def initialize(user)
+      @user = user
+      @connection = connect
+    end
+    
+    # Returns the current twitter client. If none has been created, will
+    # create a new one.
+    def client
+      @connection ||= connect
+    end
+    
+    def list_timeline(list)
+      timeline_data = client.list_timeline list[:name]
+      Timeline.create(list[:id],timeline_data)
+    end
     
     
   end

@@ -3,7 +3,7 @@ require "bundler"
 require "twitter"
 
 module SocialStream
-  module Tweetr
+  class Tweetr
     module Connection
 
       Twitter.configure do |config|

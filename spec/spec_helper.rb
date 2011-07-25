@@ -1,11 +1,14 @@
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
+require "tweetr"
+require "backend"
+
 require "rubygems"
 require "bundler"
 require "sinatra"
 require "rspec"
 require "rack/test"
+require "hashie"
 
-$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
-require "tweetr"
 
 set :environment, :test
  

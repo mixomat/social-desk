@@ -12,4 +12,5 @@ group :development, :test do
   gem 'rspec', :require => 'spec'
   gem 'rspec-core'
 	gem 'sinatra-reloader', :require => 'sinatra/reloader'
+	gem 'hashie'
 end

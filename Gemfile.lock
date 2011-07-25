@@ -73,6 +73,7 @@ PLATFORMS
 
 DEPENDENCIES
   haml
+  hashie
   json
   rack-test
   redis
