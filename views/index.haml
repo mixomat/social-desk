@@ -5,9 +5,10 @@
 	%script{:data => { :main  => 'js/main' }, :src => 'js/require-jquery.js' }
 	%header
 		%h2 Twitter lists
-		%select
+		%select{:id	=> "lists"}
 			- @lists.items.each do |list|
 				%option{:value => list.id}=list.name
+	#timeline
 			
 
 - host = ENV['VCAP_APP_HOST']
