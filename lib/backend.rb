@@ -59,6 +59,11 @@ module SocialStream
       def redis
         SocialStream::Backend.redis
       end
+        
+      def cached?(id)
+        redis.exists new(id).redis_key
+      end
+      
     end
     
 

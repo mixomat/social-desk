@@ -10,14 +10,14 @@ describe SocialStream::Backend do
     redis.client.port.should === 6379
   end
   
-  context "when included" do
+  context "when included in Dummy class" do
     
     module DummyModule
       class Dummy
         include SocialStream::Backend
 
-        def initialize
-          @id = 1
+        def initialize(id = 1)
+          @id = id
         end
       end
     end
@@ -50,9 +50,13 @@ describe SocialStream::Backend do
       redis = DummyModule::Dummy.redis
       redis.should be_kind_of Redis
     end
+    
+    it "can check the cached status" do
+      cached = DummyModule::Dummy.cached? 1
+      cached.should be_false
+    end
+    
   end
-
-  
   
   
 end
