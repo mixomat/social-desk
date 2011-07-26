@@ -28,7 +28,7 @@ describe SocialStream::Tweetr do
     describe "timeline" do
       it "can get the timeline for a list" do
         list = @tweetr.lists.items.first
-        timeline = @tweetr.list_timeline list
+        timeline = @tweetr.list_timeline list.id
 
         timeline.id.should_not be_nil
         timeline.tweets.should have_at_least(20).thing

@@ -9,3 +9,12 @@ get '/' do
   haml :index
 end
 
+get '/lists' do
+  @@tweetr.lists.to_json
+end
+
+get '/lists/:id/timeline' do
+  timeline = @@tweetr.list_timeline params[:id]
+  timeline.to_json
+end
+

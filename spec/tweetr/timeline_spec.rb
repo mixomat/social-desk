@@ -4,7 +4,7 @@ describe SocialStream::Tweetr::Timeline do
   
   before(:each) do
     @timeline_id = 1
-    @timeline_data = [Hashie::Mash.new(:text => "example tweet" , :user => {:screen_name => "mixomat" })]
+    @timeline_data = [Hashie::Mash.new(:id_str => 1, :text => "example tweet" , :user => {:screen_name => "mixomat" })]
   end
   
   describe "creation" do
@@ -13,6 +13,12 @@ describe SocialStream::Tweetr::Timeline do
       
       timeline.should be_kind_of SocialStream::Tweetr::Timeline
       timeline.id.should_not be_nil
+    end
+    
+    it "can serialize to json" do
+      timeline = SocialStream::Tweetr::Timeline.create @timeline_id, @timeline_data
+      
+      timeline.to_json.should =~ /\{"tweets":\[\{"author":"mixomat"/
     end
   end
   

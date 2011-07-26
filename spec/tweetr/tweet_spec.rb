@@ -8,7 +8,7 @@ describe SocialStream::Tweetr::Tweet do
     end
     
     it "can be created with data" do
-      tweet = SocialStream::Tweetr::Tweet.create @tweet_data
+      tweet = SocialStream::Tweetr::Tweet.create 1, @tweet_data
       
       tweet.id.should_not be_nil
       tweet.text.should === "example tweet"
@@ -16,7 +16,7 @@ describe SocialStream::Tweetr::Tweet do
     end
     
     it "can show a nice string representation" do
-      tweet = SocialStream::Tweetr::Tweet.create @tweet_data
+      tweet = SocialStream::Tweetr::Tweet.create 1, @tweet_data
       
       tweet.to_s.should =~ /\d+: example tweet \(mixomat\)/
     end

@@ -1,3 +1,5 @@
+
+
 module SocialStream
   class Tweetr
     
@@ -34,6 +36,9 @@ module SocialStream
         self
       end
       
+      def to_json(*args)
+        { :id => id, :items => items }.to_json(*args)
+      end
     end
     
     class List
@@ -63,6 +68,9 @@ module SocialStream
         load
       end
       
+      def to_json(*args)
+        { :id => id, :name => name }.to_json(*args)
+      end
     end
 
   end

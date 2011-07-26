@@ -6,12 +6,12 @@ module SocialStream
                 
       attr_reader :id, :text, :author
       
-      def initialize(id = nil)
-        @id = id ||= next_id
+      def initialize(id)
+        @id = id
       end
       
-      def self.create(tweet)
-        new().store tweet
+      def self.create(id, tweet)
+        new(id).store tweet
       end
       
       def self.load(id)
@@ -32,7 +32,12 @@ module SocialStream
       
       def to_s
         "#{@id}: #{@text} (#{author})"
-      end            
+      end      
+      
+      def to_json(*args)
+        {:id => id, :author => author, :text => text}.to_json(*args)
+      end
+            
     end
     
   end

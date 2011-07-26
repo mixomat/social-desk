@@ -7,12 +7,12 @@ module SocialStream
       attr_reader :id, :tweets
   
       def initialize(id = nil)
-        @id = id ||= next_id
+        @id = id
         @tweets = []
       end
-      
+
       def self.create(id, data)
-        new().store(data)
+        new(id).store(data)
       end
   
       def self.load(id)
@@ -28,9 +28,8 @@ module SocialStream
       
       def store(data)
         data.each do |tweet_data|
-          tweet = Tweet.create(tweet_data)
-          @tweets << tweet
-          redis.sadd(redis_key, tweet.id)
+          @tweets << Tweet.create(tweet_data.id_str, tweet_data)
+          redis.sadd(redis_key, tweet_data.id_str)
         end
         self
       end
@@ -39,6 +38,10 @@ module SocialStream
         "#{@id}: #{@tweets}"
       end
 
+      def to_json(*args)
+        {:id => id, :tweets => tweets}.to_json(*args)
+      end
     end
+    
   end
 end

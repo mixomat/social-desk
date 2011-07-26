@@ -24,4 +24,10 @@ describe SocialStream::Tweetr::Lists do
     cached = SocialStream::Tweetr::Lists.cached? 1
     cached.should be_true
   end
+  
+  it "can serialize to json" do
+    lists = SocialStream::Tweetr::Lists.create 1, @list_data
+    
+    puts lists.to_json
+  end
 end
