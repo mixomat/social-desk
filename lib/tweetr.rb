@@ -28,7 +28,7 @@ module SocialStream
     
       
     def lists
-      Lists.create(client.lists.lists) unless Lists.cached? @user
+      Lists.create(@user, client.lists.lists) unless Lists.cached? @user
       Lists.load @user
     end
     

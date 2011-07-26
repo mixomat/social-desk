@@ -18,7 +18,7 @@ describe SocialStream::Tweetr do
       it "can get current user lists" do
         lists = @tweetr.lists
 
-        lists.should be_kind_of SocialStream::Tweetr::Lists::Lists
+        lists.should be_kind_of SocialStream::Tweetr::Lists
         lists.items.should have_at_least(1).things
         lists.items.first.name.should === "Games"
       end
