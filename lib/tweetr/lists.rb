@@ -1,43 +1,69 @@
 module SocialStream
   class Tweetr
-    module Lists
+    
+    class Lists
+      include SocialStream::Backend
       
-      def lists
-       Loader.lists(client)
-      end
+      attr_reader :id, :items
       
-      class Loader   
-          include SocialStream::Backend
-          
-          def self.lists(twitter)
-            update(twitter) unless cached?
-            load
-          end
-          
-          def self.load
-            loaded_lists = Array.new
-            self.redis.smembers(redis_key(:lists)).each do |id|
-              loaded_lists << {:id => id, :name => self.redis.get("list:#{id}:name") }
-            end
-            loaded_lists
-          end
-
-          def self.update(twitter)
-            twitter.lists.lists.each do |l|
-              redis.sadd redis_key(:lists), l.id
-              self.redis.set "list:#{l.id}:name", l.name
-            end
-          end
-
-          def self.cached?
-            redis.exists redis_key(:lists)
-          end
-
-          def self.redis_key(key)
-            "user:#{@user}:#{key}"
-          end
+      def initialize(id)
+        @id = id
+        @items = []
       end
 
+      def self.create(id, data)
+        new(id).store data
+      end
+
+      def self.load(id)
+        new(id).load
+      end
+      
+      def load
+        redis.smembers(redis_key).each do |list_id|
+          @items << List.load(list_id)
+        end
+        self
+      end
+      
+      def store(lists)
+        lists.each do |entry|
+          redis.sadd redis_key, entry.id
+          @items << List.create(entry.id, entry)
+        end
+        self
+      end
+      
     end
+    
+    class List
+      include SocialStream::Backend
+
+      attr_reader :id, :name
+      
+      def initialize(id)
+        @id = id
+      end
+
+      def self.create(id, data)
+        new(id).store data
+      end
+
+      def self.load(id)
+        new(id).load
+      end
+      
+      def load
+        @name = redis.get redis_attr_key(:name)
+        self
+      end
+
+      def store(list)
+        redis.set redis_attr_key(:name), list.name
+        load
+      end
+      
+    end
+
   end
 end

@@ -12,7 +12,6 @@ module SocialStream
   class Tweetr
     
     include SocialStream::Tweetr::Connection
-    include SocialStream::Tweetr::Lists
     
     attr_reader :user
 
@@ -27,9 +26,15 @@ module SocialStream
       @connection ||= connect
     end
     
+      
+    def lists
+      Lists.create(client.lists.lists) unless Lists.cached? @user
+      Lists.load @user
+    end
+    
     def list_timeline(list)
-      timeline_data = client.list_timeline list[:name]
-      Timeline.create(list[:id],timeline_data)
+      timeline_data = client.list_timeline list.name
+      Timeline.create(list.id,timeline_data)
     end
     
     

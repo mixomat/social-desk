@@ -14,9 +14,20 @@ describe SocialStream::Tweetr do
       end
     end
 
-    describe "list timeline" do
+    describe "lists" do
+      it "can get current user lists" do
+        lists = @tweetr.lists
+
+        lists.should be_kind_of SocialStream::Tweetr::Lists::Lists
+        lists.items.should have_at_least(1).things
+        lists.items.first.name.should === "Games"
+      end
+      
+    end
+
+    describe "timeline" do
       it "can get the timeline for a list" do
-        list = @tweetr.lists.first
+        list = @tweetr.lists.items.first
         timeline = @tweetr.list_timeline list
 
         timeline.id.should_not be_nil
