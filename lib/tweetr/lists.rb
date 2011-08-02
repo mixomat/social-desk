@@ -10,7 +10,6 @@ module SocialStream
       
       def initialize(id)
         @id = id
-        @items = []
       end
 
       def self.create(id, data)
@@ -22,16 +21,16 @@ module SocialStream
       end
       
       def load
-        redis.smembers(redis_key).each do |list_id|
-          @items << List.load(list_id)
+        @items = redis.smembers(redis_key).inject([]) do |result,list_id|
+          result << List.load(list_id)
         end
         self
       end
       
       def store(lists)
-        lists.each do |entry|
+        @items = lists.inject([]) do |result, entry|
           redis.sadd redis_key, entry.id
-          @items << List.create(entry.id, entry)
+          result << List.create(entry.id, entry)
         end
         self
       end
