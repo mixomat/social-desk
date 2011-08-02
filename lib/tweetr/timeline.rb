@@ -28,7 +28,7 @@ module SocialStream
       
       def store(data)
         data.each do |tweet_data|
-          @tweets << Tweet.create(tweet_data.id_str, tweet_data)
+          @tweets << Tweet.create(:id => tweet_data.id_str, :text => tweet_data.text, :author => tweet_data.user.screen_name)
           redis.sadd(redis_key, tweet_data.id_str)
         end
         self
