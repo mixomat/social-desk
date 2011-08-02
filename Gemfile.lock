@@ -1,6 +1,7 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    SystemTimer (1.2.3)
     addressable (2.2.6)
     backports (2.3.0)
     columnize (0.3.4)
@@ -72,6 +73,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  SystemTimer
   haml
   hashie
   json
