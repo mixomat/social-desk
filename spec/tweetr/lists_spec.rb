@@ -28,6 +28,6 @@ describe SocialStream::Tweetr::Lists do
   it "can serialize to json" do
     lists = SocialStream::Tweetr::Lists.create 1, @list_data
     
-    puts lists.to_json
+    lists.to_json.should =~ /"name":"Games","id":1/
   end
 end
