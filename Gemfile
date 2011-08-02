@@ -5,7 +5,8 @@ gem 'twitter'
 gem 'json'
 gem 'haml'
 gem 'redis'
-gem "SystemTimer"
+gem	'nest'
+gem 'SystemTimer'
 
 group :development, :test do
   gem 'ruby-debug'
