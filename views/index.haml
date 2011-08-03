@@ -1,13 +1,12 @@
 !!! 5
-!!!
 %html
 	%head
 	%script{:data => { :main  => 'js/main' }, :src => 'js/require-jquery.js' }
 	%header
 		%h2 Twitter lists
-		%select{:id	=> "lists"}
+		%ul{:id	=> "lists"}
 			- @lists.items.each do |list|
-				%option{:value => list.id}=list.name
+				%li{:data => {:list => list.id}, :class => "list"}=list.name
 	#timeline
 			
 
