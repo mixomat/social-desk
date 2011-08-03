@@ -1,77 +1,23 @@
-
+require File.expand_path(File.join(File.dirname(__FILE__), 'list'))
 
 module SocialStream
   class Tweetr
-    
     class Lists
       include SocialStream::Backend
       
-      attr_reader :id, :items
+      collection :items, List
       
-      def initialize(id)
-        @id = id
-        @items = []
-      end
-
-      def self.create(id, data)
-        new(id).store data
-      end
-
-      def self.load(id)
-        new(id).load
-      end
-      
-      def load
-        redis.smembers(redis_key).each do |list_id|
-          @items << List.load(list_id)
+      def self.create_from_data(id, data)
+        lists = Lists.create(:id => id)
+        data.each do |entry|
+          lists.items << List.create(:id => entry.id, :name => entry.name)
         end
-        self
-      end
-      
-      def store(lists)
-        lists.each do |entry|
-          redis.sadd redis_key, entry.id
-          @items << List.create(entry.id, entry)
-        end
-        self
+        lists
       end
       
       def to_json(*args)
         { :id => id, :items => items }.to_json(*args)
       end
     end
-    
-    class List
-      include SocialStream::Backend
-
-      attr_reader :id, :name
-      
-      def initialize(id)
-        @id = id
-      end
-
-      def self.create(id, data)
-        new(id).store data
-      end
-
-      def self.load(id)
-        new(id).load
-      end
-      
-      def load
-        @name = redis.get redis_attr_key(:name)
-        self
-      end
-
-      def store(list)
-        redis.set redis_attr_key(:name), list.name
-        load
-      end
-      
-      def to_json(*args)
-        { :id => id, :name => name }.to_json(*args)
-      end
-    end
-
   end
 end

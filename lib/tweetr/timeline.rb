@@ -1,23 +1,13 @@
+require File.expand_path(File.join(File.dirname(__FILE__), 'tweet'))
+
+
 module SocialStream
   class Tweetr
     
     class Timeline
       include SocialStream::Backend
           
-      attr_reader :id, :tweets
-  
-      def initialize(id = nil)
-        @id = id
-        @tweets = []
-      end
-
-      def self.create(id, data)
-        new(id).store(data)
-      end
-  
-      def self.load(id)
-        new(id).load
-      end
+      collection :tweets, SocialStream::Tweetr::Tweet
   
       def load
         redis.smembers(redis_key).each do |tweet_id|
@@ -26,16 +16,12 @@ module SocialStream
         self
       end
       
-      def store(data)
-        data.each do |tweet_data|
-          @tweets << Tweet.create(tweet_data.id_str, tweet_data)
-          redis.sadd(redis_key, tweet_data.id_str)
+      def self.create_from_data(id, data)
+        timeline = Timeline.create(:id => id)
+        data.each do |tweet|
+          timeline.tweets << Tweet.create(:id => tweet.id, :text => tweet.text, :author => tweet.user.screen_name)
         end
-        self
-      end
-  
-      def to_s
-        "#{@id}: #{@tweets}"
+        timeline
       end
 
       def to_json(*args)

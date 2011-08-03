@@ -4,30 +4,36 @@ describe SocialStream::Tweetr::Tweet do
 
   describe "creation" do
     before(:each) do
-      @tweet_data = Hashie::Mash.new(:text => "example tweet" , :user => {:screen_name => "mixomat" } )
+      @tweet_data = {:id => 1, :text => "example tweet" , :author => "mixomat"}
+      @tweet = SocialStream::Tweetr::Tweet.create @tweet_data
     end
     
     it "can be created with data" do
-      tweet = SocialStream::Tweetr::Tweet.create 1, @tweet_data
-      
-      tweet.id.should_not be_nil
-      tweet.text.should === "example tweet"
-      tweet.author.should === "mixomat"
+      @tweet.id.should === "1"
+      @tweet.text.should === "example tweet"
+      @tweet.author.should === "mixomat"
     end
     
     it "can show a nice string representation" do
-      tweet = SocialStream::Tweetr::Tweet.create 1, @tweet_data
-      
-      tweet.to_s.should =~ /\d+: example tweet \(mixomat\)/
+      @tweet.to_s.should =~ /\d+: example tweet \(mixomat\)/
+    end
+    
+    it "can show a nice json representation" do
+      @tweet.to_json.should === "{\"author\":\"mixomat\",\"text\":\"example tweet\",\"id\":\"1\"}"
     end
   end
   
   describe "loading" do
+    before(:each) do
+      @tweet = SocialStream::Tweetr::Tweet.load 1
+    end
+    
     it "can be loaded for an id" do
-      tweet = SocialStream::Tweetr::Tweet.load 1
-      
-      tweet.should_not be_nil
-      tweet.id.should === 1
+      @tweet.id.should === "1"
+    end
+    
+    it "can show a nice json representation" do
+      @tweet.to_json.should === "{\"author\":\"mixomat\",\"text\":\"example tweet\",\"id\":\"1\"}"
     end
   end
 
