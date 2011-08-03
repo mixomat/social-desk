@@ -6,7 +6,7 @@
 	%header
 		%h2 Twitter lists
 		%select
-			- @lists.items.each do |list|
+			- @lists.each do |list|
 				%option{:value => list.id}=list.name
 			
 

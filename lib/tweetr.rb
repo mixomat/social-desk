@@ -5,7 +5,7 @@ require "json"
 root = File.expand_path(File.dirname(__FILE__))
 require "#{root}/backend"
 require "#{root}/tweetr/connection"
-require "#{root}/tweetr/lists"
+require "#{root}/tweetr/user"
 require "#{root}/tweetr/timeline"
 require "#{root}/tweetr/tweet"
 
@@ -16,8 +16,8 @@ module SocialStream
     
     attr_reader :user
 
-    def initialize(user)
-      @user = user
+    def initialize(screen_name)
+      @user = User.create(:id => screen_name)
       @connection = connect
     end
     
@@ -28,8 +28,8 @@ module SocialStream
     end
       
     def lists
-      Lists.create_from_data(@user, client.lists.lists) unless Lists.exists? @user
-      Lists.load @user
+      @user.update_lists(client.lists.lists) if @user.lists.empty?
+      @user.lists
     end
     
     def list_timeline(list_id)

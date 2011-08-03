@@ -2,21 +2,20 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'list'))
 
 module SocialStream
   class Tweetr
-    class Lists
+    class User
       include SocialStream::Backend
       
-      collection :items, List
+      collection :lists, List
       
-      def self.create_from_data(id, data)
-        lists = Lists.create(:id => id)
+      def update_lists(data)
         data.each do |entry|
-          lists.items << List.create(:id => entry.id, :name => entry.name)
+          lists << List.create(:id => entry.id, :name => entry.name)
         end
         lists
       end
       
       def to_json(*args)
-        { :id => id, :items => items }.to_json(*args)
+        { :id => id, :lists => lists }.to_json(*args)
       end
     end
   end

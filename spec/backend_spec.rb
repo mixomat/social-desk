@@ -151,6 +151,21 @@ describe SocialStream::Backend do
     it "can serialize to a nice json string" do
       @collection.to_json.should === "[{\"baz\":\"nix\"}]"
     end
+    
+    it "can be cleared" do
+      @collection << @item
+      @collection.clear
+    end
+    
+    it "has an empty status of false if it contains an item" do
+      @collection << @item
+      @collection.empty?.should be_false
+    end
+    
+    it "has an empty status of true if it is empty" do
+      @collection.clear
+      @collection.empty?.should be_true
+    end
   end
   
 end
