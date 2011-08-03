@@ -28,16 +28,16 @@ module SocialStream
     end
       
     def lists
-      Lists.create(@user, client.lists.lists) unless Lists.cached? @user
+      Lists.create_from_data(@user, client.lists.lists) unless Lists.exists? @user
       Lists.load @user
     end
     
     def list_timeline(list_id)
-      if Timeline.cached? list_id
+      if Timeline.exists? list_id
         Timeline.load list_id
       else
         timeline_data = client.list_timeline list_id.to_i
-        Timeline.create(list_id,timeline_data)
+        Timeline.create_from_data(list_id,timeline_data)
       end
     end
     

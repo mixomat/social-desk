@@ -33,24 +33,16 @@ module SocialStream
     end
     
     module InstanceMethods
-      
       attr_accessor :id
-      attr_reader :fresh
             
       def initialize(attrs = {})
         @id = initialize_id(attrs[:id])
-        @fresh = true
         @attrs = Hash.new { |hash, key| hash[key] = load_attr(key) }
         update_attributes(attrs.reject{|k,v| k === :id})
       end
       
       def initialize_id(id)
         @id = id.to_s
-      end
-      
-      def create
-        store
-        fresh = false
       end
       
       def store
@@ -75,49 +67,48 @@ module SocialStream
       end
       
       def load_attr(name)
-        #unless fresh?
-          redis.get redis_attr_key(name)
-        #end
+        redis.hget key, name
       end
       
       def store_attr(name, value)
         write_attr(name, value)
-        redis.set redis_attr_key(name), value
+        redis.hset key, name, value
       end
 
-
       def model
-        self.class.name.split('::').last.downcase
+        self.class.model
       end
       
       def key
         self.class.key[id]
       end
-      
-      def redis_key
-        raise ArgumentError, "id instance variable is not set" if @id.nil?
-        "#{model}:#{@id}"
-      end
-      
-      def redis_attr_key(name)
-        "#{redis_key}:#{name}"
-      end
-      
-      def next_id
-        redis.incr "next.#{model}.id"
-      end
 
+      def to_hash
+        attrs = {}
+        self.class.attributes.each do |name|
+          attrs[name] = read_attr(name)
+        end
+        attrs
+      end
       
+      def to_s
+        "#{@id}: #{@attrs}"
+      end
     end
     
     module ClassMethods
   
-      # Attributes class variable, which contains an array of attributes for each class.  
+      # Attributes, collections class variables, which contain an array of attributes, collections for each class.  
       #
       @@attributes  = Hash.new { |hash, key| hash[key] = [] }
-
+      @@collections  = Hash.new { |hash, key| hash[key] = [] }
+      
       def attributes
         @@attributes[self]
+      end
+      
+      def collections
+        @@collections[self]
       end
       
       def attribute(name)
@@ -132,11 +123,19 @@ module SocialStream
         attributes << name unless attributes.include?(name)
       end
       
+      def collection(name, model)
+        define_method(name) do
+          Collection.new(key[name], model)
+        end
+        
+        collections << name unless collections.include?(name)
+      end
+      
       # Convenient method for creation of Models.
       def create(attrs)
         raise ArgumentError, "id argument must be provided in hash" unless attrs.has_key? :id
         model = new(attrs)
-        model.create
+        model.store
         model
       end
       
@@ -144,13 +143,8 @@ module SocialStream
       def load(id)
         new(:id => id) if id && self.exists?(id)
       end
-      
-      # Checks if this model instance is already cached.
-      def cached?(id)
-        puts new(:id => id).redis_key
-        redis.exists new(:id => id).redis_key
-      end
-          
+      alias [] load
+       
       def model
          self.to_s.split('::').last.downcase
       end
@@ -167,14 +161,51 @@ module SocialStream
         key[:all]
       end
       
-      def redis_key(id)
-        raise ArgumentError, "id argument is not set" if id.nil?
-        "#{model}:#{id}"
-      end
-      
       # Gets the single redis instance
       def redis
         SocialStream::Backend.redis
+      end
+    end
+    
+    class Collection
+      attr_accessor :key, :model
+      
+      def initialize(key, model)
+        @key = key
+        @model = model
+      end
+      
+      # Adds a model to this set.
+      def <<(model)
+        key.sadd(model.id)
+      end
+      alias add <<
+      
+      def include?(model)
+        key.sismember(model.id)
+      end
+      
+      def each(&block)
+        key.smembers.each {|id| block.call(model.load(id)) }
+      end
+      
+      def inject(result, &block)
+        key.smembers.each {|id| block.call(result, model.load(id)) }
+        result
+      end
+      
+      def first
+        model.load(key.smembers.first)
+      end
+    
+      def to_json(*args)
+        result = []
+        each { |model| result << model}
+        result.to_json(*args)
+      end
+      
+      def to_s
+        key.smembers
       end
     end
     

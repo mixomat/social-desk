@@ -17,9 +17,7 @@ describe SocialStream::Tweetr do
     describe "lists" do
       it "can get current user lists" do
         lists = @tweetr.lists
-
         lists.should be_kind_of SocialStream::Tweetr::Lists
-        lists.items.should have_at_least(1).things
         lists.items.first.name.should === "Games"
       end
       
@@ -31,7 +29,6 @@ describe SocialStream::Tweetr do
         timeline = @tweetr.list_timeline list.id
 
         timeline.id.should_not be_nil
-        timeline.tweets.should have_at_least(20).thing
 
         tweet = timeline.tweets.first
         tweet.should be_kind_of SocialStream::Tweetr::Tweet

@@ -13,15 +13,24 @@ describe SocialStream::Backend do
   context "when included as module" do
     
     module DummyModule
+      class Item
+        include SocialStream::Backend
+        attribute :baz
+      end
+      
       class Dummy
         include SocialStream::Backend
         attribute :foo
         attribute :bar
+        
+        collection :items, Item
       end
+
+
     end
     
     before(:each) do
-      @dummy = DummyModule::Dummy.new(:id => 1)
+      @dummy = DummyModule::Dummy.create(:id => 1, :foo => "john", :bar => "doe" )
       @klass = DummyModule::Dummy
     end
     
@@ -29,10 +38,6 @@ describe SocialStream::Backend do
       @dummy.model.should === "dummy"
     end
 
-    it "can get a next id" do
-      @dummy.next_id.should_not be_nil
-    end
-    
     it "can get a redis key" do
       @dummy.key.should === "dummy:1"
     end
@@ -48,8 +53,6 @@ describe SocialStream::Backend do
     it "can get the redis instance" do
       @klass.redis.should be_kind_of Redis
     end
-  
-    
 
     context "when :foo and :bar attributes are set" do    
       it "attributes array should have 2 attributes" do
@@ -65,32 +68,89 @@ describe SocialStream::Backend do
         @dummy.bar = "test"
         @dummy.bar.should === "test"
       end
-    end
-    
-    context "on creation" do
-      it "can be instantiated with attributes hash" do
-        klas = @klass.new(:id => 1, :foo => "john", :bar => "doe" )
+      
+      it "can create a hash" do
+        @dummy.to_hash.should === {:foo => "john", :bar => "doe" }
       end
       
-      it "can be created with attributes hash" do
-        @klass.create(:id => 1, :foo => "john", :bar => "doe" )
-      end
+
       
-      it "exists after creation" do
-        @klass.exists?(1).should be_true
+      context "on creation" do
+        it "can be instantiated with attributes hash" do
+          klas = @klass.new(:id => 1, :foo => "john", :bar => "doe" )
+        end
+
+        it "can be created with attributes hash" do
+          @klass.create(:id => 1, :foo => "john", :bar => "doe" )
+        end
+
+        it "exists after creation" do
+          @klass.exists?(1).should be_true
+        end
+      end
+
+      context "on loading" do
+        
+        before(:each) do
+          @loaded = DummyModule::Dummy.load(1)
+        end
+        
+        it "can be loaded for an id" do
+          @loaded.should_not be_nil
+          @loaded.foo.should === "john"
+          @loaded.bar.should === "doe"
+        end
+        
+        it "can create a hash when loaded" do
+          @loaded.to_hash.should === {:foo => "john", :bar => "doe"}
+        end
       end
     end
     
-    context "on loading" do
-      it "can be loaded for an id" do
-        dummy = @klass.load 1
-        dummy.should_not be_nil
-        dummy.foo.should === "john"
-        dummy.bar.should === "doe"
+    context ":items collection is set" do
+      it "can get the items collection" do
+        @dummy.items.should be_kind_of SocialStream::Backend::Collection 
       end
+      
+      it "can add a collection member" do
+        @dummy.items << DummyModule::Item.create(:id => 1, :baz => "nix")
+      end      
     end
      
   end
   
+  describe SocialStream::Backend::Collection do
+
+    before(:each) do
+      @dummy = DummyModule::Dummy.create(:id => 1)
+      @collection = SocialStream::Backend::Collection.new @dummy.key[:items], DummyModule::Item
+      @item = DummyModule::Item.load(1)
+    end
+    
+    it "has a key and model accessor" do
+      @collection.key.should === "dummy:1:items"
+      @collection.model.name.should === "DummyModule::Item"
+    end
+    
+    it "allows adding of models" do
+      @collection << @item
+    end
+    
+    it "can check if a model is in this collection" do
+      @collection << @item
+      @collection.include?(@item).should be_true
+    end
+    
+    it "can iterate over each model" do
+      @collection << @item
+      @collection.each do |model|
+        model.baz.should === "nix"
+      end
+    end
+    
+    it "can serialize to a nice json string" do
+      @collection.to_json.should === "[{\"baz\":\"nix\"}]"
+    end
+  end
   
 end

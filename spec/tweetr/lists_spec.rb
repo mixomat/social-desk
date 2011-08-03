@@ -4,30 +4,26 @@ require File.expand_path(File.join(File.dirname(__FILE__), '../spec_helper'))
 describe SocialStream::Tweetr::Lists do
   
   before(:each) do
-    @list_data = [Hashie::Mash.new(:id => 1 , :name => "Games")]
+    list_data = [Hashie::Mash.new(:id => 1 , :name => "Games")]
+    @lists = SocialStream::Tweetr::Lists.create_from_data 1, list_data
   end
 
   it "can be created with data" do
-    lists = SocialStream::Tweetr::Lists.create 1, @list_data
+    @lists.should be_kind_of SocialStream::Tweetr::Lists
     
-    lists.should be_kind_of SocialStream::Tweetr::Lists
-    lists.items.should have(1).things
-    
-    list = lists.items.first
-    list.should be_kind_of SocialStream::Tweetr::List
+    list = @lists.items.first
+    list.should be_kind_of List
     list.name.should === "Games"  
-    list.id.should === 1      
+    list.id.should === "1"      
   end
   
   
   it "can check the cached status" do
-    cached = SocialStream::Tweetr::Lists.cached? 1
+    cached = SocialStream::Tweetr::Lists.exists? 1
     cached.should be_true
   end
   
   it "can serialize to json" do
-    lists = SocialStream::Tweetr::Lists.create 1, @list_data
-    
-    lists.to_json.should =~ /"name":"Games","id":1/
+    @lists.to_json.should =~ /"items":\[\{"name":"Games","id":"1"\}\],"id":"1"\}/
   end
 end
