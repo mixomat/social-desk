@@ -34,7 +34,7 @@ describe SocialStream::Tweetr do
         tweet.should be_kind_of SocialStream::Tweetr::Tweet
         tweet.id.should_not be_nil
         tweet.text.should have_at_least(2).characters
-        tweet.author.should have_at_least(2).character
+        tweet.author_name.should have_at_least(2).character
       end
     end
 

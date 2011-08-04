@@ -25,7 +25,7 @@ describe SocialStream::Tweetr::Timeline do
     end
     
     it "can serialize to json" do
-      @timeline.to_json.should =~ /\{"tweets":\[\{"author":"mixomat","text":"example tweet","id":"1"\}\],"id":"1"\}/
+      @timeline.to_json.should =~ /\{"tweets":\[\{"author":\{"name":"mixomat","avatar":""\},"text":"example tweet","id":"1"\}\],"id":"1"\}/
     end
   end
   
@@ -47,7 +47,7 @@ describe SocialStream::Tweetr::Timeline do
     end
     
     it "can serialize to json" do
-      @loaded.to_json.should =~ /\{"tweets":\[\{"author":"mixomat","text":"example tweet","id":"1"\}\],"id":"1"\}/
+      @loaded.to_json.should =~ /\{"tweets":\[\{"author":\{"name":"mixomat","avatar":""\},"text":"example tweet","id":"1"\}\],"id":"1"\}/
     end
   end
   
