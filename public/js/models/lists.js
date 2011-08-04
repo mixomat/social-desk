@@ -1,41 +1,50 @@
-define(['jquery'], function ($) {
+define(['jquery', 'text!templates/timeline.html'], function ($,timelineTemplate) {
 	var me = {};
 	me.views = {};
 	
-	var Tweet = Backbone.Model.extend({});
-
-	var Timeline = Backbone.Collection.extend({
-		model: Tweet,
+	var Timeline = Backbone.Model.extend({
 		url: function () {
-			return '/lists/' + this.get['id'] + '/timeline';
+			return '/lists/' + this.get('id') + '/timeline';
 		} 
 	});
 
 
 	var TimelineView = Backbone.View.extend({
-		collection: new Timeline({id: "1"}),
+		el: $("#container"),
 		
 		events: {
-			"click .list": "render"
+			"click li.list": "timeline"
 		},
 
 		initialize : function() {
-			_.bindAll(this, "render", "timeline");
-			this.collection.bind('all', this.render);
-			console.log("TimelineView intialized");
+			_.bindAll(this, "render", "timeline", "switchTimeline");
 		},	
-	
-		timeline: function() {
-			console.log("switching timeline");
+		
+		timeline: function(event) {
+			var id = $(event.target).data("list");
+			var name =  $(event.target).html();
+			this.switchTimeline(id,name);
 		},
-	
+
+		switchTimeline: function(id, name) {
+			this.model = new Timeline({"id": id, "name": name});
+			this.model.bind('change', this.render);
+			this.model.fetch();
+		},
+			
 		render: function() {
-			console.log("render called");
+			console.log("render called:", this.model);
+			var html = Mustache.to_html(timelineTemplate, this.model.attributes);
+			$("#timeline").html(html);
+			
+			return this;			
 		}
 	});
 	
 	me.init = function() {
-		me.views.timeline = new TimelineView();
+		me.views.timeline = new TimelineView({
+			el: $("#container")
+		});
 		return me;
 	}
 	

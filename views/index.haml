@@ -4,15 +4,16 @@
 	%script{:data => { :main  => 'js/main' }, :src => 'js/require-jquery.js' }
 	%header
 		%h2 Twitter lists
+	#container
 		%ul{:id	=> "lists"}
 			- @lists.each do |list|
 				%li{:data => {:list => list.id}, :class => "list"}=list.name
-	#timeline
+		#timeline
 			
 
-- host = ENV['VCAP_APP_HOST']
-- port = ENV['VCAP_APP_PORT']
-- services = ENV['VCAP_SERVICES']
-%p= "Running on Cloud Foundry host: #{host}:#{port}" unless host.nil?
-%p= "Available services: #{services}" unless services.nil?
+		- host = ENV['VCAP_APP_HOST']
+		- port = ENV['VCAP_APP_PORT']
+		- services = ENV['VCAP_SERVICES']
+		%p= "Running on Cloud Foundry host: #{host}:#{port}" unless host.nil?
+		%p= "Available services: #{services}" unless services.nil?
 	
