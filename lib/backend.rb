@@ -197,6 +197,16 @@ module SocialStream
       def first
         model.load(key.smembers.first)
       end
+      
+      # Deletes this collection.
+      def clear
+        key.del
+      end
+      
+      # Checks if the collection is empty.
+      def empty?
+        !key.exists
+      end
     
       def to_json(*args)
         result = []

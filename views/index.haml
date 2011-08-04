@@ -5,7 +5,7 @@
 	%header
 		%h2 Twitter lists
 		%ul{:id	=> "lists"}
-			- @lists.items.each do |list|
+			- @lists.each do |list|
 				%li{:data => {:list => list.id}, :class => "list"}=list.name
 	#timeline
 			

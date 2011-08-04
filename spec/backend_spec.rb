@@ -122,7 +122,7 @@ describe SocialStream::Backend do
   describe SocialStream::Backend::Collection do
 
     before(:each) do
-      @dummy = DummyModule::Dummy.create(:id => 1)
+      @dummy = DummyModule::Dummy.load(1)
       @collection = SocialStream::Backend::Collection.new @dummy.key[:items], DummyModule::Item
       @item = DummyModule::Item.load(1)
     end
@@ -149,7 +149,23 @@ describe SocialStream::Backend do
     end
     
     it "can serialize to a nice json string" do
+      @collection << @item
       @collection.to_json.should === "[{\"baz\":\"nix\"}]"
+    end
+    
+    it "can be cleared" do
+      @collection << @item
+      @collection.clear
+    end
+    
+    it "has an empty status of false if it contains an item" do
+      @collection << @item
+      @collection.empty?.should be_false
+    end
+    
+    it "has an empty status of true if it is empty" do
+      @collection.clear
+      @collection.empty?.should be_true
     end
   end
   

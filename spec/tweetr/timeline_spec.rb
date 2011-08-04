@@ -8,9 +8,9 @@ describe SocialStream::Tweetr::Timeline do
 
   describe "creation" do
     before(:each) do
-      @timeline_data = {:id => 1, :text => "example tweet" , :user => {:screen_name => "mixomat" }}
-      @timeline_mash =  [Hashie::Mash.new(@timeline_data)]
-      @timeline = SocialStream::Tweetr::Timeline.create_from_data @timeline_id, @timeline_mash
+      @timeline = SocialStream::Tweetr::Timeline.create(:id => @timeline_id)
+      timeline_mash =  [Hashie::Mash.new(:id => 1, :text => "example tweet" , :user => {:screen_name => "mixomat" })]
+      @timeline.update_timeline(timeline_mash)
     end
     
     

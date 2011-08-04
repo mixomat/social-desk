@@ -8,20 +8,12 @@ module SocialStream
       include SocialStream::Backend
           
       collection :tweets, SocialStream::Tweetr::Tweet
-  
-      def load
-        redis.smembers(redis_key).each do |tweet_id|
-          @tweets << Tweet.load(tweet_id)
-        end
-        self
-      end
       
-      def self.create_from_data(id, data)
-        timeline = Timeline.create(:id => id)
+      def update_timeline(data)
         data.each do |tweet|
-          timeline.tweets << Tweet.create(:id => tweet.id, :text => tweet.text, :author => tweet.user.screen_name)
+          tweets << Tweet.create(:id => tweet.id, :text => tweet.text, :author => tweet.user.screen_name)
         end
-        timeline
+        tweets
       end
 
       def to_json(*args)
