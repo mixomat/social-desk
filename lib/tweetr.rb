@@ -33,12 +33,9 @@ module SocialStream
     end
     
     def list_timeline(list_id)
-      if Timeline.exists? list_id
-        Timeline.load list_id
-      else
-        timeline_data = client.list_timeline list_id.to_i
-        Timeline.create_from_data(list_id,timeline_data)
-      end
+      return Timeline.load(list_id) if Timeline.exists? list_id
+      
+      Timeline.create(:id => list_id).update_timeline(client.list_timeline(list_id.to_i))
     end
     
     

@@ -122,7 +122,7 @@ describe SocialStream::Backend do
   describe SocialStream::Backend::Collection do
 
     before(:each) do
-      @dummy = DummyModule::Dummy.create(:id => 1)
+      @dummy = DummyModule::Dummy.load(1)
       @collection = SocialStream::Backend::Collection.new @dummy.key[:items], DummyModule::Item
       @item = DummyModule::Item.load(1)
     end
@@ -149,6 +149,7 @@ describe SocialStream::Backend do
     end
     
     it "can serialize to a nice json string" do
+      @collection << @item
       @collection.to_json.should === "[{\"baz\":\"nix\"}]"
     end
     
