@@ -6,12 +6,12 @@ module SocialStream
     
     class Timeline
       include SocialStream::Backend
-          
+      
       collection :tweets, SocialStream::Tweetr::Tweet
       
       def update_timeline(data)
         data.each do |tweet|
-          tweets << Tweet.create(:id => tweet.id, :text => tweet.text, :author => tweet.user.screen_name)
+          tweets << Tweet.create(:id => tweet.id, :text => tweet.text, :author_name => tweet.user.screen_name, :author_avatar => tweet.user.profile_image_url)
         end
         tweets
       end

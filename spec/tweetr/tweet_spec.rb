@@ -4,22 +4,19 @@ describe SocialStream::Tweetr::Tweet do
 
   describe "creation" do
     before(:each) do
-      @tweet_data = {:id => 1, :text => "example tweet" , :author => "mixomat"}
+      @tweet_data = {:id => 1, :text => "example tweet" , :author_name => "mixomat", :author_avatar => "http://example.com/avatar"}
       @tweet = SocialStream::Tweetr::Tweet.create @tweet_data
     end
     
     it "can be created with data" do
       @tweet.id.should === "1"
       @tweet.text.should === "example tweet"
-      @tweet.author.should === "mixomat"
-    end
-    
-    it "can show a nice string representation" do
-      @tweet.to_s.should =~ /\d+: example tweet \(mixomat\)/
+      @tweet.author_avatar.should === "http://example.com/avatar"
+      @tweet.author_name.should === "mixomat"
     end
     
     it "can show a nice json representation" do
-      @tweet.to_json.should === "{\"author\":\"mixomat\",\"text\":\"example tweet\",\"id\":\"1\"}"
+      @tweet.to_json.should === "{\"author\":{\"avatar\":\"http://example.com/avatar\",\"name\":\"mixomat\"},\"text\":\"example tweet\",\"id\":\"1\"}"
     end
   end
   
@@ -33,7 +30,7 @@ describe SocialStream::Tweetr::Tweet do
     end
     
     it "can show a nice json representation" do
-      @tweet.to_json.should === "{\"author\":\"mixomat\",\"text\":\"example tweet\",\"id\":\"1\"}"
+      @tweet.to_json.should === "{\"author\":{\"avatar\":\"http://example.com/avatar\",\"name\":\"mixomat\"},\"text\":\"example tweet\",\"id\":\"1\"}"
     end
   end
 
